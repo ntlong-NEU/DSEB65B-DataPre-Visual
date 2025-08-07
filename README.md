@@ -1,6 +1,5 @@
 # DSEB65B-DataPreparation and Visualization
 
-# DSEB65A-Data Preparation and Visualization
 
 ## **Three main stages in this course:**
 
