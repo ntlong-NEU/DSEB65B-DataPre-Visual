@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary Scikit-learn Workflow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .info-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .visual-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+            margin-top: 1rem;
+        }
+        .param-list {
+            font-size: 0.75rem;
+            text-align: left;
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+        .param-list code {
+            font-weight: 500;
+            color: #1d4ed8;
+            background-color: #eff6ff;
+            padding: 0.1rem 0.25rem;
+            border-radius: 0.25rem;
+        }
+        .param-list .signature {
+             display: block;
+             background-color: #f3f4f6;
+             padding: 0.5rem;
+             border-radius: 0.25rem;
+             color: #374151;
+             word-wrap: break-word;
+             line-height: 1.5;
+        }
+        .param-list .signature code {
+            background-color: transparent;
+            padding: 0;
+        }
+        .param-list strong {
+            display: block;
+            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#00A6FB] mb-2">Summary of Scikit-learn Tools by Workflow</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">This is a detailed summary of commonly used classes and functions in Scikit-learn for data preparation - DSEB(MFE).</p>
+        </header>
+
+        <div class="space-y-12">
+
+            <section>
+                <h2 class="text-3xl font-bold text-[#DC0073] mb-4 text-center">1. Data Cleaning</h2>
+                <p class="text-center text-gray-600 mb-8">Techniques to handle common issues like missing values and outliers.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">SimpleImputer</h4>
+                            <p class="text-sm text-gray-500">Fills missing values using simple strategies.</p>
+                            <div class="param-list">
+                                <p class="signature"><code>class sklearn.impute.SimpleImputer(*, strategy='mean', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>strategy</code>: 'mean', 'median', 'most_frequent', 'constant'.</p>
+                                <p><code>fill_value</code>: Value to use when strategy='constant'.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="simpleImputerChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">KNNImputer</h4>
+                            <p class="text-sm text-gray-500">Fills missing values based on the mean of the K-nearest neighbors.</p>
+                             <div class="param-list">
+                                <p class="signature"><code>class sklearn.impute.KNNImputer(*, n_neighbors=5, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>n_neighbors</code>: Number of neighbors (K) to use.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                             <canvas id="knnImputerChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">IterativeImputer</h4>
+                            <p class="text-sm text-gray-500">Fills missing values by modeling each feature as a function of other features.</p>
+                             <div class="param-list">
+                                <p class="signature"><code>class sklearn.impute.IterativeImputer(*, estimator=None, max_iter=10, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>estimator</code>: The regressor model to use for prediction.</p>
+                                <p><code>max_iter</code>: Maximum number of imputation rounds.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                             <canvas id="iterativeImputerChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                         <div>
+                            <h4 class="font-bold text-lg mb-2">LocalOutlierFactor</h4>
+                            <p class="text-sm text-gray-500">Identifies outliers based on the local density of a data point's neighborhood.</p>
+                             <div class="param-list">
+                                <p class="signature"><code>class sklearn.neighbors.LocalOutlierFactor(*, n_neighbors=20, contamination='auto', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>n_neighbors</code>: Number of neighbors to consider for each point.</p>
+                                <p><code>contamination</code>: The expected proportion of outliers in the data.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="outlierChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <h2 class="text-3xl font-bold text-[#48E5C2] mb-4 text-center">2. Data Transformation</h2>
+                <p class="text-center text-gray-600 mb-8">This module includes tools to scale, encode, and transform input features after cleaning.</p>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">StandardScaler</h4>
+                            <p class="text-sm text-gray-500">Transforms data to have a mean of 0 and a variance of 1.</p>
+                             <div class="param-list">
+                                <p class="signature"><code>class sklearn.preprocessing.StandardScaler()</code></p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="standardScalerChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">MinMaxScaler</h4>
+                            <p class="text-sm text-gray-500">Scales data to a fixed range, by default [0, 1].</p>
+                             <div class="param-list">
+                                <p class="signature"><code>class sklearn.preprocessing.MinMaxScaler(feature_range=(0, 1), ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>feature_range</code>: The desired (min, max) range.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="minMaxScalerChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">RobustScaler</h4>
+                            <p class="text-sm text-gray-500">Scales data using the median and IQR, making it robust to outliers.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.preprocessing.RobustScaler(*, quantile_range=(25.0, 75.0), ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>quantile_range</code>: The quantile range to use.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="robustScalerChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">OneHotEncoder</h4>
+                            <p class="text-sm text-gray-500">Encodes categorical features (with no ordinal relationship) into binary columns.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.preprocessing.OneHotEncoder(*, handle_unknown='error', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>handle_unknown</code>: 'error' or 'ignore' when new values appear.</p>
+                            </div>
+                        </div>
+                         <div class="visual-container p-4">
+                            <div class="text-center w-full">
+                                <div class="p-2 bg-gray-200 rounded font-mono text-sm">['Red']</div>
+                                <div class="text-2xl text-[#48E5C2] font-semibold my-2">&darr;</div>
+                                <div class="p-2 bg-gray-200 rounded font-mono text-sm">[1, 0, 0]</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">OrdinalEncoder</h4>
+                            <p class="text-sm text-gray-500">Encodes categorical features (with an ordinal relationship) into integers.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.preprocessing.OrdinalEncoder(*, categories='auto', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>categories</code>: Defines the encoding order for each column.</p>
+                            </div>
+                        </div>
+                         <div class="visual-container p-4">
+                            <div class="text-center w-full">
+                                <div class="p-2 bg-gray-200 rounded font-mono text-sm">['High']</div>
+                                <div class="text-2xl text-[#48E5C2] font-semibold my-2">&darr;</div>
+                                <div class="p-2 bg-gray-200 rounded font-mono text-sm">[2]</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">PowerTransformer</h4>
+                            <p class="text-sm text-gray-500">Transforms data to make its distribution more Gaussian-like.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.preprocessing.PowerTransformer(method='yeo-johnson', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>method</code>: 'yeo-johnson' (default) or 'box-cox'.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="powerTransformerChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">QuantileTransformer</h4>
+                            <p class="text-sm text-gray-500">Transforms data to follow a uniform distribution.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.preprocessing.QuantileTransformer(*, n_quantiles=1000, output_distribution='uniform', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>output_distribution</code>: 'uniform' or 'normal'.</p>
+                                <p><code>n_quantiles</code>: Number of quantiles to use.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                             <canvas id="quantileTransformerChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">KBinsDiscretizer</h4>
+                            <p class="text-sm text-gray-500">Bins continuous features into intervals.</p>
+                            <div class="param-list">
+                                <p class="signature"><code>class sklearn.preprocessing.KBinsDiscretizer(n_bins=5, *, strategy='quantile', ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>n_bins</code>: The number of bins to produce.</p>
+                                <p><code>strategy</code>: 'uniform', 'quantile', 'kmeans'.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="kbinsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">PolynomialFeatures</h4>
+                            <p class="text-sm text-gray-500">Generates polynomial features to capture non-linear relationships.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.preprocessing.PolynomialFeatures(degree=2, *, interaction_only=False, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>degree</code>: The highest degree of the polynomial.</p>
+                                <p><code>interaction_only</code>: Only create interaction features.</p>
+                            </div>
+                        </div>
+                         <div class="visual-container p-4">
+                              <div class="text-center w-full">
+                                <div class="p-2 bg-gray-200 rounded font-mono text-sm">[a, b]</div>
+                                <div class="text-2xl text-[#48E5C2] font-semibold my-2">&darr;</div>
+                                <div class="p-2 bg-gray-200 rounded font-mono text-xs">[1, a, b, a², ab, b²]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <h2 class="text-3xl font-bold text-[#FFC759] mb-4 text-center">3. Feature Selection</h2>
+                <p class="text-center text-gray-600 mb-8">This module contains algorithms to select the most important subset of features.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">VarianceThreshold</h4>
+                            <p class="text-sm text-gray-500">Removes features with low or zero variance.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.feature_selection.VarianceThreshold(threshold=0.0)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>threshold</code>: The variance threshold to keep a feature.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="varianceThresholdChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">SelectKBest</h4>
+                            <p class="text-sm text-gray-500">Selects the K best features based on univariate statistical tests.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.feature_selection.SelectKBest(score_func=f_classif, *, k=10)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>score_func</code>: The statistical scoring function (e.g., f_classif, chi2).</p>
+                                <p><code>k</code>: The number of top features to select.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="selectKBestChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">RFE (Recursive Feature Elimination)</h4>
+                            <p class="text-sm text-gray-500">Selects features by recursively removing the weakest features.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.feature_selection.RFE(estimator, *, n_features_to_select=None, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>estimator</code>: The model used to evaluate features.</p>
+                                <p><code>n_features_to_select</code>: The number of features to select.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                             <div class="space-y-2 text-center">
+                                 <div class="p-2 bg-gray-100 rounded-lg shadow-sm"><p class="font-semibold text-xs">Start with N features</p></div>
+                                 <div class="text-xl font-bold text-[#FFC759]">&darr;</div>
+                                 <div class="p-2 bg-blue-100 rounded-lg"><p class="font-semibold text-xs">Train model</p></div>
+                                 <div class="text-xl font-bold text-[#FFC759]">&darr;</div>
+                                 <div class="p-2 bg-red-100 rounded-lg"><p class="font-semibold text-xs">Eliminate weakest feature</p></div>
+                                 <div class="text-xl font-bold text-[#FFC759] transform rotate-90 -translate-y-4 -translate-x-6 w-fit mx-auto">&Larr;</div>
+                                 <p class="text-xs text-gray-500 -mt-6">Repeat</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">RFECV</h4>
+                            <p class="text-sm text-gray-500">An advanced version of RFE that automatically finds the optimal number of features via cross-validation.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.feature_selection.RFECV(estimator, *, cv=None, scoring=None, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>estimator</code>: The model to use.</p>
+                                <p><code>cv</code>: The cross-validation strategy.</p>
+                                <p><code>scoring</code>: The evaluation metric.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="rfecvChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">SelectFromModel</h4>
+                            <p class="text-sm text-gray-500">Selects features based on their importance from a trained model.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>class sklearn.feature_selection.SelectFromModel(estimator, *, threshold=None, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>estimator</code>: The pre-trained model.</p>
+                                <p><code>threshold</code>: The threshold for feature selection.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                             <canvas id="featureSelectionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Permutation Importance</h4>
+                            <p class="text-sm text-gray-500">Assesses feature importance by measuring the performance drop when a feature's values are randomly permuted.</p>
+                            <div class="param-list">
+                                <p class="signature"><code>sklearn.inspection.permutation_importance(estimator, X, y, *, scoring=None, n_repeats=5, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>scoring</code>: The evaluation metric.</p>
+                                <p><code>n_repeats</code>: Number of times to repeat the permutation.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                           <canvas id="permutationImportanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                 <h2 class="text-3xl font-bold text-[#00A6FB] mb-4 text-center">4. Workflow, Evaluation & Tuning</h2>
+                 <p class="text-center text-gray-600 mb-8">Tools to combine all the above steps, split data, tune, and evaluate the final model.</p>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                     <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Pipeline</h4>
+                            <p class="text-sm text-gray-500">"Packages" a sequence of processing steps and a final model into a single object.</p>
+                             <div class="param-list">
+                                <p class="signature"><code>class sklearn.pipeline.Pipeline(steps, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>steps</code>: A list of (name, transform) tuples.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container text-xs font-semibold">
+                           <div class="flex items-center space-x-1">
+                               <div class="p-2 rounded bg-pink-100">Imputer</div>
+                               <div class="text-[#00A6FB]">&rarr;</div>
+                               <div class="p-2 rounded bg-teal-100">Scaler</div>
+                               <div class="text-[#00A6FB]">&rarr;</div>
+                               <div class="p-2 rounded bg-blue-200">Model</div>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">ColumnTransformer</h4>
+                            <p class="text-sm text-gray-500">Applies different transformation steps to different columns of the data.</p>
+                            <div class="param-list">
+                                <p class="signature"><code>class sklearn.compose.ColumnTransformer(transformers, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>transformers</code>: A list of (name, transform, columns) tuples.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container text-xs font-semibold">
+                            <div class="text-center">
+                                <div>Input Data</div>
+                                <div class="text-2xl text-[#00A6FB]">&darr;</div>
+                                <div class="flex space-x-2">
+                                    <div class="flex-1 text-center">
+                                        <div class="p-2 bg-teal-100 rounded">Numeric Cols &rarr; Scaler</div>
+                                    </div>
+                                     <div class="flex-1 text-center">
+                                        <div class="p-2 bg-yellow-100 rounded">Categorical Cols &rarr; Encoder</div>
+                                    </div>
+                                </div>
+                                <div class="text-2xl text-[#00A6FB]">&darr;</div>
+                                <div>Model</div>
+                           </div>
+                        </div>
+                    </div>
+                     <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">train_test_split</h4>
+                            <p class="text-sm text-gray-500">Splits the dataset into two parts: a training set and a testing set.</p>
+                            <div class="param-list">
+                                <p class="signature"><code>sklearn.model_selection.train_test_split(*arrays, test_size=None, random_state=None, stratify=None)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>test_size</code>: The proportion of the test set.</p>
+                                <p><code>random_state</code>: Ensures reproducible splits.</p>
+                                <p><code>stratify</code>: Preserves class proportions.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="splitChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">cross_val_score</h4>
+                            <p class="text-sm text-gray-500">Reliably evaluates the stability and performance of a model.</p>
+                             <div class="param-list">
+                                 <p class="signature"><code>sklearn.model_selection.cross_val_score(estimator, X, y, *, cv=None, scoring=None)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>estimator</code>: The model to evaluate.</p>
+                                <p><code>cv</code>: The number of folds to use.</p>
+                                <p><code>scoring</code>: The metric to use.</p>
+                            </div>
+                        </div>
+                        <div class="visual-container">
+                            <canvas id="crossValChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">GridSearchCV</h4>
+                            <p class="text-sm text-gray-500">Automates the hyperparameter tuning process by trying all parameter combinations.</p>
+                            <div class="param-list">
+                                <p class="signature"><code>class sklearn.model_selection.GridSearchCV(estimator, param_grid, ...)</code></p>
+                                <strong>Key Parameters:</strong>
+                                <p><code>estimator</code>: The model to tune.</p>
+                                <p><code>param_grid</code>: The grid of parameters to try.</p>
+                            </div>
+                        </div>
+                         <div class="visual-container">
+                            <div class="grid grid-cols-3 gap-1 text-xs">
+                                <div class="p-1 border rounded bg-gray-50">C=0.1</div>
+                                <div class="p-1 border rounded bg-gray-50">C=1</div>
+                                <div class="p-1 border rounded bg-green-200 ring-2 ring-green-500">C=10</div>
+                                <div class="p-1 border rounded bg-gray-50">k='lin'</div>
+                                <div class="p-1 border rounded bg-gray-50">k='lin'</div>
+                                <div class="p-1 border rounded bg-green-200 ring-2 ring-green-500">k='lin'</div>
+                                <div class="p-1 border rounded bg-gray-50">k='rbf'</div>
+                                <div class="p-1 border rounded bg-gray-50">k='rbf'</div>
+                                <div class="p-1 border rounded bg-gray-50">k='rbf'</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-6 text-center">Model Evaluation Metrics (`sklearn.metrics`)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="info-card">
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Accuracy</h4>
+                                <p class="text-sm text-gray-500">The ratio of correctly predicted instances.</p>
+                            </div>
+                            <div class="visual-container w-40 h-40 mx-auto">
+                                <canvas id="accuracyChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Confusion Matrix</h4>
+                                <p class="text-sm text-gray-500">Shows the number of correct and incorrect predictions for each class.</p>
+                            </div>
+                            <div class="visual-container grid grid-cols-2 gap-1 text-sm">
+                                <div class="p-2 bg-teal-100 rounded">TP: 85</div>
+                                <div class="p-2 bg-red-100 rounded">FP: 10</div>
+                                <div class="p-2 bg-red-100 rounded">FN: 15</div>
+                                <div class="p-2 bg-teal-100 rounded">TN: 90</div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Precision, Recall & F1</h4>
+                                <p class="text-sm text-gray-500">More detailed performance metrics for the positive class.</p>
+                            </div>
+                            <div class="visual-container h-40 w-full">
+                                <canvas id="precisionRecallChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                             <div>
+                                <h4 class="font-bold text-lg mb-2">MAE & MSE (Regression)</h4>
+                                <p class="text-sm text-gray-500">Measure the average error of predictions.</p>
+                            </div>
+                            <div class="visual-container h-40 w-full">
+                                <canvas id="regressionErrorChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">ROC Curve & AUC</h4>
+                                <p class="text-sm text-gray-500">Shows the model's ability to distinguish between classes.</p>
+                            </div>
+                            <div class="visual-container h-40 w-full">
+                                 <canvas id="rocChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                             <div>
+                                <h4 class="font-bold text-lg mb-2">R² Score (Regression)</h4>
+                                <p class="text-sm text-gray-500">The proportion of the variance in the target variable that the model can explain.</p>
+                            </div>
+                            <div class="visual-container w-full">
+                                <div class="w-full bg-gray-200 rounded-full h-6">
+                                    <div class="bg-blue-500 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm" style="width: 88%">88%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const vibrantColors = {
+                blue: '#00A6FB',
+                pink: '#DC0073',
+                teal: '#48E5C2',
+                yellow: '#FFC759',
+                gray: 'rgba(107, 114, 128, 0.5)',
+                lightGray: '#f3f4f6'
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) { return label.join(' '); } 
+                else { return label; }
+            };
+            
+            const commonChartOptions = (legendPos = 'bottom') => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: legendPos !== 'none', position: legendPos, labels: { font: { size: 10 }, boxWidth: 10 } },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                },
+                scales: {
+                    x: { display: false, ticks: { font: { size: 10 } } },
+                    y: { display: false, ticks: { font: { size: 10 } } }
+                }
+            });
+            
+            new Chart(document.getElementById('simpleImputerChart'), {
+                type: 'bar',
+                data: { labels: ['Before', 'After'], datasets: [{ data: [100, 80], backgroundColor: vibrantColors.gray }, { data: [0, 20], backgroundColor: vibrantColors.pink }] },
+                options: { ...commonChartOptions('none'), scales: { x: { stacked: true }, y: { stacked: true, display: true, ticks: { callback: v => v + '%' } } }, plugins: { legend: {display: false}, title: { display: true, text: 'Filling Missing Values', font: {size: 10} } } }
+            });
+
+            new Chart(document.getElementById('knnImputerChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        { label: 'Data', data: [{x:2,y:2}, {x:2.5,y:3}, {x:7,y:8}, {x:8,y:7.5}], backgroundColor: vibrantColors.blue },
+                        { label: 'Missing Point', data: [{x:4,y:4.5}], backgroundColor: vibrantColors.pink, radius: 8, pointStyle: 'crossRot' }
+                    ]
+                },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions().plugins, title: { display: true, text: 'Finding Nearest Neighbors', font: {size: 10} } }, scales: {x: {display:true}, y: {display:true}} }
+            });
+
+            new Chart(document.getElementById('iterativeImputerChart'), {
+                type: 'bar',
+                data: { labels: ['Imputation Error'], datasets: [
+                    {label: 'SimpleImputer (Mean)', data: [15.2], backgroundColor: vibrantColors.gray},
+                    {label: 'IterativeImputer', data: [5.1], backgroundColor: vibrantColors.pink}
+                ]},
+                options: { ...commonChartOptions('top'), indexAxis: 'y', scales: { x: { display: true } }, plugins: { ...commonChartOptions('top').plugins, title: { display: true, text: 'Error Comparison', font: {size: 10} } } }
+            });
+            
+            new Chart(document.getElementById('outlierChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{ label: 'Inliers', data: Array.from({length: 40}, () => ({x: Math.random() * 8 + 1, y: Math.random() * 8 + 1})), backgroundColor: vibrantColors.blue }, { label: 'Outliers', data: [{x: 9.5, y: 9.5}, {x:0.5, y: 9.8}], backgroundColor: vibrantColors.pink, radius: 6 }]
+                },
+                options: { ...commonChartOptions('top'), plugins: { ...commonChartOptions('top').plugins, title: { display: true, text: 'Detecting Anomalies', font: {size: 10} } }, scales: {x: {display:true}, y: {display:true}} }
+            });
+            
+            new Chart(document.getElementById('standardScalerChart'), {
+                type: 'line',
+                data: { labels: [-3,-2,-1,0,1,2,3], datasets: [{ label: 'Normal Distribution', data: [0.004, 0.05, 0.24, 0.39, 0.24, 0.05, 0.004], borderColor: vibrantColors.teal, fill: true, backgroundColor: vibrantColors.teal+'33' }] },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions().plugins, title: { display: true, text: 'Mean=0, Var=1', font: {size: 10} } }, scales: { x: { display: true }, y: { display: false } } }
+            });
+            
+            new Chart(document.getElementById('minMaxScalerChart'), {
+                type: 'bar',
+                data: { labels: ['A', 'B', 'C'], datasets: [{ data: [0.1, 0.5, 1.0], backgroundColor: vibrantColors.teal }] },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions().plugins, title: { display: true, text: 'Values in [0, 1] range', font: {size: 10} } }, scales: { y: { display: true, beginAtZero: true, max: 1 } } }
+            });
+            
+            new Chart(document.getElementById('robustScalerChart'), {
+                type: 'scatter',
+                data: { datasets: [
+                    { label: 'Data', data: [{x:1,y:1},{x:2,y:2},{x:3,y:3}, {x:10,y:10}], backgroundColor: vibrantColors.teal },
+                    { label: 'Outlier', data: [{x:10, y:10}], radius: 6, backgroundColor: vibrantColors.pink }
+                ]},
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions().plugins, title: { display: true, text: 'Robust to Outliers', font: {size: 10} } }, scales: {x: {display:true}, y: {display:true}} }
+            });
+
+            new Chart(document.getElementById('powerTransformerChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Bin 1', 'Bin 2', 'Bin 3', 'Bin 4', 'Bin 5'],
+                    datasets: [ { label: 'Before', data: [50, 30, 15, 8, 4], backgroundColor: vibrantColors.gray, }, { label: 'After', data: [5, 20, 40, 25, 8], backgroundColor: vibrantColors.teal, } ]
+                },
+                options: { ...commonChartOptions('top'), plugins: { ...commonChartOptions('top').plugins, title: { display: true, text: 'Distribution Transform', font: {size: 10} } }, scales: { y: { display: false } } }
+            });
+             
+            new Chart(document.getElementById('quantileTransformerChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Bin 1', 'Bin 2', 'Bin 3', 'Bin 4', 'Bin 5'],
+                    datasets: [ { label: 'After', data: [20, 20, 20, 20, 20], backgroundColor: vibrantColors.teal } ]
+                },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Uniform Distribution', font: {size: 10} } }, scales: { y: { display: true, beginAtZero: true } } }
+            });
+            
+            new Chart(document.getElementById('kbinsChart'), {
+                type: 'bar',
+                data: { labels: ['Low', 'Medium', 'High'], datasets: [{ data: [30, 50, 20], backgroundColor: vibrantColors.teal }] },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Data Discretization', font: {size: 10} } }, scales: { y: { display: true } } }
+            });
+            
+             new Chart(document.getElementById('varianceThresholdChart'), {
+                type: 'line',
+                data: { labels: ['Sample 1', 'Sample 2', 'Sample 3', 'Sample 4'], datasets: [{ data: [5, 5, 5, 5], borderColor: vibrantColors.gray, steppped: true }, { data: [2, 8, 4, 7], borderColor: vibrantColors.yellow }] },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Remove constant features', font: {size: 10} } }, scales: { y: { display: true } } }
+            });
+
+            new Chart(document.getElementById('selectKBestChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['A', 'B', 'C', 'D', 'E'],
+                    datasets: [{ label: 'Statistical Score', data: [120, 95, 30, 25, 5], backgroundColor: [vibrantColors.yellow, vibrantColors.yellow, vibrantColors.lightGray, vibrantColors.lightGray, vibrantColors.lightGray] }]
+                },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Select K=2 best features', font: {size: 10} } }, scales: { y: { display: true } } }
+            });
+            
+             new Chart(document.getElementById('rfecvChart'), {
+                type: 'line',
+                data: {
+                    labels: [1,2,3,4,5,6,7,8],
+                    datasets: [{ label: 'CV Accuracy', data: [0.75, 0.82, 0.88, 0.91, 0.90, 0.89, 0.89, 0.88], borderColor: vibrantColors.yellow, tension: 0.1 }]
+                },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Find optimal features (4)', font: {size: 10} } }, scales: { x: {display: true, title: {text: '# of Features', display: true, font: {size: 8}}}, y: { display: true } } }
+            });
+
+            new Chart(document.getElementById('featureSelectionChart'), {
+                type: 'bar',
+                data: {
+                    labels: [ 'Income', 'Education', 'Age' ],
+                    datasets: [{ label: 'Importance', data: [0.35, 0.28, 0.15], backgroundColor: vibrantColors.yellow }]
+                },
+                options: { ...commonChartOptions('none'), indexAxis: 'y', plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Predictive Power', font: {size: 10} } }, scales: { x: { display: true } } }
+            });
+            
+             new Chart(document.getElementById('permutationImportanceChart'), {
+                type: 'bar',
+                data: {
+                    labels: [ 'Income', 'Education', 'Age' ],
+                    datasets: [{ label: 'Performance Drop', data: [0.25, 0.18, 0.05], backgroundColor: vibrantColors.yellow }]
+                },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Permutation Importance', font: {size: 10} } }, scales: { y: { display: true } } }
+            });
+            
+             new Chart(document.getElementById('splitChart'), {
+                type: 'pie',
+                data: { labels: ['Train Set (80%)', 'Test Set (20%)'], datasets: [{ data: [80, 20], backgroundColor: [vibrantColors.blue, vibrantColors.yellow] }] },
+                options: { ...commonChartOptions('top') }
+            });
+            
+             new Chart(document.getElementById('crossValChart'), {
+                type: 'bar',
+                data: { labels: ['Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5'], datasets: [{ label: 'Accuracy', data: [0.91, 0.88, 0.92, 0.89, 0.90], backgroundColor: vibrantColors.blue }] },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Cross-Validation Scores', font: {size: 10} } }, scales: { y: { display: true, beginAtZero: false } } }
+            });
+
+            new Chart(document.getElementById('accuracyChart'), {
+                type: 'doughnut',
+                data: { labels: ['Correct', 'Incorrect'], datasets: [{ data: [87.5, 12.5], backgroundColor: [vibrantColors.teal, vibrantColors.pink], hoverOffset: 4 }] },
+                options: { ...commonChartOptions('top'), cutout: '60%' }
+            });
+            
+            new Chart(document.getElementById('precisionRecallChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Precision', 'Recall', 'F1-Score'],
+                    datasets: [{ data: [0.85, 0.89, 0.87], backgroundColor: [vibrantColors.blue, vibrantColors.teal, vibrantColors.yellow] }]
+                },
+                 options: { ...commonChartOptions('none'), scales: { y: { beginAtZero: true, max: 1, display: true } } }
+            });
+
+            new Chart(document.getElementById('regressionErrorChart'), {
+                type: 'scatter',
+                data: { datasets: [{ data: [{x:10,y:12},{x:15,y:14},{x:20,y:23},{x:25,y:24},{x:30,y:35},{x:35,y:33}], backgroundColor: vibrantColors.pink }] },
+                options: { ...commonChartOptions('none'), plugins: { ...commonChartOptions('none').plugins, title: { display: true, text: 'Predictions vs. Actuals', font: {size: 10} } }, scales: {x: {display:true}, y: {display:true}} }
+            });
+
+            new Chart(document.getElementById('rocChart'), {
+                type: 'line',
+                data: {
+                    labels: [0, 0.2, 0.4, 0.6, 0.8, 1.0],
+                    datasets: [{ label: 'ROC (AUC = 0.92)', data: [0, 0.6, 0.8, 0.9, 0.95, 1.0], borderColor: vibrantColors.pink, fill: true, tension: 0.4 }, { label: 'Random Guess', data: [{x:0, y:0}, {x:1, y:1}], borderColor: vibrantColors.gray, borderDash: [5,5], pointRadius: 0 }]
+                },
+                 options: { ...commonChartOptions('top'), plugins: { ...commonChartOptions('top').plugins }, scales: {x: {display:true, title:{display:true, text:'FPR', font:{size:8}}}, y: {display:true, title:{display:true, text:'TPR', font:{size:8}}}} }
+            });
+        });
+    </script>
+</body>
+</html>
