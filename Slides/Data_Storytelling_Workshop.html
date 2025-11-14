@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Storytelling Workshop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Slate-50 bg, Slate-800 text, Indigo-600 accent) -->
+    <!-- Application Structure Plan: A "Workshop-Style" SPA that guides the user through *building* a data story, rather than just reading about one. The structure uses a main nav ("Introduction", "Foundation", "Building the 3 Acts", "Tactics", "Conclusion") and interactive "workshop" elements within each section (e.g., a "Chart Simulator" for Act 2, a "Conflict" text-box for Foundation). This active, guided-learning structure was chosen to maximize user engagement, understanding, and synthesis of the report's "how-to" framework. -->
+    <!-- Visualization & Content Choices: 1. LRRH (Report Info) -> Goal: Compare -> Method: Toggle-able text blocks -> Interaction: JS click to show/hide -> Justification: Immediately shows "data vs. story". 2. Conflict (Report Info) -> Goal: Engage -> Method: HTML text areas ("What is" vs "What could be") -> Interaction: User typing -> Justification: Makes abstract concept tangible. 3. 3-Act Structure (Report Info) -> Goal: Organize -> Method: HTML/CSS Diagram -> Interaction: None (static visual) -> Justification: More visual than a table. 4. Chart Cleanup (Report Info) -> Goal: Demonstrate Change -> Method: Chart.js Bar Chart -> Interaction: JS buttons update chart options (gridlines, colors) and call chart.update() -> Justification: The key "wow" factor; teaches by *showing* the principles in action. 5. Logic Titles (Report Info) -> Goal: Compare -> Method: Click-to-reveal text -> Interaction: JS click -> Justification: Simple, effective before/after. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            max-height: 40vh;
+            margin: 1rem auto;
+        }
+        .nav-link {
+            @apply px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors;
+        }
+        .nav-link.active {
+            @apply bg-indigo-100 text-indigo-700 font-semibold;
+        }
+        .section-card {
+            @apply bg-white p-6 sm:p-8 rounded-xl shadow-lg w-full mb-12;
+        }
+        h2 {
+            @apply text-4xl font-extrabold text-indigo-800 mb-2;
+        }
+        h3 {
+            @apply text-2xl font-bold text-indigo-700 mt-6 mb-4;
+        }
+        .pill {
+            @apply inline-block bg-indigo-100 text-indigo-800 text-sm font-medium px-4 py-1 rounded-full;
+        }
+        .interactive-area {
+            @apply border-2 border-slate-200 border-dashed rounded-lg p-6 mt-6 bg-slate-50;
+        }
+        .btn {
+            @apply px-5 py-2.5 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md;
+        }
+        .btn-outline {
+            @apply px-4 py-2 rounded-lg font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-all;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-bold text-xl text-indigo-600">Data Storytelling Workshop</span>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
+                    <a href="#intro" class="nav-link active" data-nav-link>Introduction</a>
+                    <a href="#foundation" class="nav-link" data-nav-link>Foundation</a>
+                    <a href="#building" class="nav-link" data-nav-link>Building the 3 Acts</a>
+                    <a href="#tactics" class="nav-link" data-nav-link>Tactics</a>
+                    <a href="#conclusion" class="nav-link" data-nav-link>Conclusion</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 mt-8">
+
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="section-card scroll-mt-20">
+            <span class="pill">Introduction</span>
+            <h2>Beyond the Numbers</h2>
+            <p class="text-lg text-slate-600 mt-4">Welcome to the workshop! This section illustrates *why* we need to tell stories. Pure logic (facts) is often ineffective, but when united with emotion (story), your message is not just understood, but *felt*.</p>
+            
+            <div class="interactive-area">
+                <h3 class="!mt-0 !text-xl !text-slate-800">Interactive: Little Red Riding Hood</h3>
+                <p class="text-slate-600 mb-4">Experience the difference yourself. Click the buttons below to toggle between the two presentations.</p>
+                <div class="flex space-x-2 mb-4">
+                    <button id="btn-data" class="btn-outline" data-active="true">View as Data</button>
+                    <button id="btn-story" class="btn-outline" data-active="false">View as Story</button>
+                </div>
+
+                <div id="content-data" class="bg-white p-4 rounded-lg border border-slate-300">
+                    <h4 class="font-semibold text-lg">Dry Data</h4>
+                    <ul class="list-disc list-inside text-slate-700 mt-2 space-y-1">
+                        <li><b>Subject:</b> Little Red Riding Hood (LRRH)</li>
+                        <li><b>Journey:</b> Traveled 0.54 miles from Point A to Point B.</li>
+                        <li><b>Encounter:</b> Met Wolf. Wolf ran ahead, consumed grandmother.</li>
+                        <li><b>Problem ID:</b> After three questions, Wolf consumed LRRH.</li>
+                        <li><b>Solution:</b> Woodsman deployed axe to Wolf's abdomen.</li>
+                        <li><b>Outcome:</b> Grandmother & LRRH rescued.</li>
+                    </ul>
+                    <p class="mt-4 text-sm italic text-slate-500"><b>How it feels:</b> Sterile, lifeless, hard to recall.</p>
+                </div>
+                
+                <div id="content-story" class="hidden bg-white p-4 rounded-lg border border-slate-300">
+                    <h4 class="font-semibold text-lg">Story Structure</h4>
+                    <p class="text-slate-700 mt-2">The classic narrative structure—with its setting, conflict, and climax—has allowed this story to endure for generations. It sticks in our minds in a way that mere data cannot.</p>
+                    <p class="mt-4 text-sm italic text-slate-500"><b>How it feels:</b> Engaging, memorable, creates emotion.</p>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-slate-700">Explore the Original Story:</h4>
+                    <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 mt-2">
+                        <a href="https://eva.vn/lam-me/truyen-co-be-quang-khan-do-truyen-co-tich-grim-hay-nhat-cho-be-c10a455522.html" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:underline">
+                            &#128214; Read the full story (Web)
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=Z2QIZubNhYc" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:underline">
+                            &#127916; Watch the video (YouTube)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Foundation -->
+        <section id="foundation" class="section-card scroll-mt-20">
+            <span class="pill">Foundation</span>
+            <h2>Building a Solid Foundation</h2>
+            <p class="text-lg text-slate-600 mt-4">Before you open a slide deck, you need a strategic foundation. This is where you'll draft the core building blocks: your "Big Idea," "Conflict," and "Structure."</p>
+
+            <h3>1. The Big Idea</h3>
+            <p class="text-slate-600 mb-4">This is the soul of your message, distilled into a single sentence. An effective "Big Idea" has 3 components (per Nancy Duarte):</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-semibold text-indigo-700">1. Unique Point of View</h4>
+                    <p class="text-sm text-slate-600 mt-1">Articulates your specific perspective.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-semibold text-indigo-700">2. What's at Stake?</h4>
+                    <p class="text-sm text-slate-600 mt-1">Answers the 'So what?' question.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-semibold text-indigo-700">3. A Complete Sentence</h4>
+                    <p class="text-sm text-slate-600 mt-1">A clear, declarative statement.</p>
+                </div>
+            </div>
+
+            <h3>2. The Critical Role of Conflict</h3>
+            <p class="text-slate-600">Conflict is the story's engine. It's the tension between "what is" and "what could be." Use the area below to draft your story's central conflict.</p>
+            <div class="interactive-area grid sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="what-is" class="block text-xl font-semibold text-slate-800 mb-2">What Is (Reality)</label>
+                    <textarea id="what-is" rows="4" class="w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Describe the current reality. e.g., 'Sales are down 15% quarter-over-quarter.'"></textarea>
+                </div>
+                <div>
+                    <label for="what-could-be" class="block text-xl font-semibold text-slate-800 mb-2">What Could Be (Potential)</label>
+                    <textarea id="what-could-be" rows="4" class="w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Describe the ideal future. e.g., 'We could be the market leader if we adopt strategy X.'"></textarea>
+                </div>
+            </div>
+            
+            <h3>3. The Core Narrative Structure (Aristotle)</h3>
+            <p class="text-slate-600 mb-4">This is the framework for presenting the tension (conflict) you just identified.</p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full text-center">
+                <div class="flex-1 bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-lg font-semibold text-indigo-700">ACT 1: THE BEGINNING</h4>
+                    <p class="text-sm text-slate-600 mt-1">Establish context, present the problem (What Is).</p>
+                </div>
+                <div class="flex-1 bg-slate-50 p-6 rounded-lg border border-slate-200 relative">
+                    <span class="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 bg-white px-1 text-slate-400 hidden sm:block">&rarr;</span>
+                    <h4 class="text-lg font-semibold text-indigo-700">ACT 2: THE MIDDLE</h4>
+                    <p class="text-sm text-slate-600 mt-1">Present evidence, data, explore the conflict.</p>
+                    <span class="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 bg-white px-1 text-slate-400 hidden sm:block">&rarr;</span>
+                </div>
+                <div class="flex-1 bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-lg font-semibold text-indigo-700">ACT 3: THE END</h4>
+                    <p class="text-sm text-slate-600 mt-1">Deliver the solution (What Could Be) & Call to Action.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Building the 3 Acts -->
+        <section id="building" class="section-card scroll-mt-20">
+            <span class="pill">Building the 3 Acts</span>
+            <h2>Turning Theory into Practice</h2>
+            <p class="text-lg text-slate-600 mt-4">This is the main workshop, where we build each act of the story. See how to apply structure and visualization techniques to persuade your audience.</p>
+
+            <div class="space-y-8 mt-6">
+                <!-- Act 1 -->
+                <div class="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3>Act 1: The Beginning – Setting the Context</h3>
+                    <p class="text-slate-600 mb-4">To hook your audience, you must answer their 5 implicit questions (per Cliff Atkinson). Use this as your checklist:</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center"><span class="text-indigo-500 font-bold mr-2">1. The Setting:</span> When and where does the story take place?</li>
+                        <li class="flex items-center"><span class="text-indigo-500 font-bold mr-2">2. The Protagonist:</span> Who is your audience?</li>
+                        <li class="flex items-center"><span class="text-indigo-500 font-bold mr-2">3. The Imbalance:</span> What is the problem?</li>
+                        <li class="flex items-center"><span class="text-indigo-500 font-bold mr-2">4. The Desired Balance:</span> What is the ideal future?</li>
+                        <li class="flex items-center"><span class="text-indigo-500 font-bold mr-2">5. The Solution:</span> How will you bring about the change?</li>
+                    </ul>
+                </div>
+
+                <!-- Act 2 -->
+                <div class="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3>Act 2: The Middle – Presenting Evidence</h3>
+                    <p class="text-slate-600">This is where you use data to make your case. But *how* you show the data is as important as the data itself. Try the simulator below.</p>
+                    
+                    <div class="interactive-area">
+                        <h4 class="text-xl font-semibold text-slate-800 mb-2">Chart Simulator</h4>
+                        <p class="text-slate-600 mb-4">See how we can improve a cluttered chart to make a message stand out.</p>
+                        
+                        <div class="chart-container">
+                            <canvas id="vizChart"></canvas>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 justify-center mt-4">
+                            <button id="btn-reset" class="btn-outline">Original (Cluttered)</button>
+                            <button id="btn-declutter" class="btn-outline">1. Declutter</button>
+                            <button id="btn-focus" class="btn-outline">2. Focus Attention</button>
+                        </div>
+                        <p class="text-center text-sm text-slate-500 mt-2 italic">Message: "Q3 revenue dropped sharply."</p>
+                    </div>
+                </div>
+
+                <!-- Act 3 -->
+                <div class="bg-white p-6 rounded-lg border border-slate-200">
+                    <h3>Act 3: The End – The Call to Action</h3>
+                    <p class="text-slate-600">Never finish without a clear Call to Action (CTA). Your audience has followed the story; now tell them exactly what you want them to do.</p>
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200 mt-4">
+                        <h4 class="text-lg font-semibold text-indigo-800">Tips for an effective CTA:</h4>
+                        <ul class="list-disc list-inside text-indigo-700 mt-2">
+                            <li><b>Be clear and specific:</b> Don't say "Think about it." Say "Approve budget X."</li>
+                            <li><b>Connect to Act 1:</b> Restate the problem (What Is) and your solution (What Could Be).</li>
+                            <li><b>Reinforce urgency:</b> Why must this be done *now*?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Tactics -->
+        <section id="tactics" class="section-card scroll-mt-20">
+            <span class="pill">Tactics</span>
+            <h2>Ensuring a Clear Message</h2>
+            <p class="text-lg text-slate-600 mt-4">A good structure can fail if the delivery is confusing. This section provides proven tactics to make sure your audience follows along.</p>
+
+            <h3>The Power of Repetition: Bing, Bang, Bongo</h3>
+            <p class="text-slate-600 mb-4">Helps an unfamiliar audience absorb and retain your core message.</p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full text-center">
+                <div class="flex-1 bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-lg font-semibold text-indigo-700">Bing (Intro)</h4>
+                    <p class="text-sm text-slate-600 mt-1">"Here's what I'm going to tell you."</p>
+                </div>
+                <div class="flex-1 bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-lg font-semibold text-indigo-700">Bang (Content)</h4>
+                    <p class="text-sm text-slate-600 mt-1">"Here is the detailed content."</p>
+                </div>
+                <div class="flex-1 bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-lg font-semibold text-indigo-700">Bongo (Conclusion)</h4>
+                    <p class="text-sm text-slate-600 mt-1">"Here's what I just told you."</p>
+                </div>
+            </div>
+
+            <h3>The Importance of Structural Logic</h3>
+            <p class="text-slate-600">Your presentation must be logical both horizontally and vertically.</p>
+            
+            <div class="interactive-area grid sm:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-xl font-semibold text-slate-800 mb-2">Horizontal Logic (Titles)</h4>
+                    <p class="text-slate-600 mb-4">Your slide titles alone should tell the story. Try this interaction:</p>
+                    <div class="bg-white p-4 rounded-lg border border-slate-300">
+                        <p class="text-slate-500">Slide Title 5:</p>
+                        <p id="title-logic-bad" class="text-2xl font-bold text-red-600">"2024 Budget"</p>
+                        <p id="title-logic-good" class="hidden text-2xl font-bold text-green-700">"2024 Spending Projected to Exceed Budget"</p>
+                        <button id="btn-title-logic" class="text-sm text-indigo-600 hover:underline mt-2">Is this title an "action title"? Click to see a better one.</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-slate-800 mb-2">Vertical Logic (Content)</h4>
+                    <p class="text-slate-600">Everything on a slide (chart, text) must support that one title.</p>
+                    <ul class="list-disc list-inside text-slate-600 mt-4 space-y-1">
+                        <li>Title: "Q3 Revenue Dropped Sharply..."</li>
+                        <li>Chart: Must *show* the Q3 drop.</li>
+                        <li>Color: Must *highlight* Q3.</li>
+                        <li>Text: Must *explain* the Q3 drop.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Conclusion -->
+        <section id="conclusion" class="section-card scroll-mt-20 text-center">
+            <span class="pill">Conclusion</span>
+            <h2 class="mt-4">The Story is for Them</h2>
+            <p class="text-lg text-slate-600 mt-4 max-w-3xl mx-auto">The core principle to remember: the story is not for you; it is for your audience. By making the audience the protagonist, your data is no longer abstract numbers, but evidence that supports *their* journey.</p>
+            <p class="text-lg text-slate-700 font-semibold mt-6">Your goal is no longer to simply present data, but to tell a powerful story *with* data—a story that inspires change.</p>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Intro Toggle ---
+            const btnData = document.getElementById('btn-data');
+            const btnStory = document.getElementById('btn-story');
+            const contentData = document.getElementById('content-data');
+            const contentStory = document.getElementById('content-story');
+
+            function toggleIntro(show) {
+                if (show === 'data') {
+                    contentData.classList.remove('hidden');
+                    contentStory.classList.add('hidden');
+                    btnData.setAttribute('data-active', 'true');
+                    btnData.classList.add('bg-slate-200');
+                    btnStory.setAttribute('data-active', 'false');
+                    btnStory.classList.remove('bg-slate-200');
+                } else {
+                    contentData.classList.add('hidden');
+                    contentStory.classList.remove('hidden');
+                    btnData.setAttribute('data-active', 'false');
+                    btnData.classList.remove('bg-slate-200');
+                    btnStory.setAttribute('data-active', 'true');
+                    btnStory.classList.add('bg-slate-200');
+                }
+            }
+            btnData.addEventListener('click', () => toggleIntro('data'));
+            btnStory.addEventListener('click', () => toggleIntro('story'));
+            toggleIntro('data'); // Init
+
+            // --- Chart.js Visualization ---
+            const ctx = document.getElementById('vizChart').getContext('2d');
+            let vizChart;
+
+            const clutteredBg = 'rgba(203, 213, 225, 0.6)';
+            const clutteredBorder = 'rgba(148, 163, 184, 1)';
+            const focusedBg = [
+                'rgba(203, 213, 225, 0.6)', // Slate 300
+                'rgba(203, 213, 225, 0.6)',
+                'rgba(220, 38, 38, 0.6)', // Red 600
+                'rgba(203, 213, 225, 0.6)',
+            ];
+            const focusedBorder = [
+                'rgba(148, 163, 184, 1)', // Slate 400
+                'rgba(148, 163, 184, 1)',
+                'rgba(185, 28, 28, 1)', // Red 700
+                'rgba(148, 163, 184, 1)',
+            ];
+
+            const chartData = {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [120, 150, 80, 130],
+                    backgroundColor: clutteredBg,
+                    borderColor: clutteredBorder,
+                    borderWidth: 2,
+                }]
+            };
+            
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        enabled: true,
+                         callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            color: '#e2e8f0' // Slate 200
+                        },
+                        ticks: {
+                            display: true
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            display: true
+                        }
+                    }
+                }
+            };
+            
+            // Initial (cluttered) state
+            const clutteredOptions = JSON.parse(JSON.stringify(chartOptions));
+
+            // Decluttered state
+            const declutteredOptions = JSON.parse(JSON.stringify(chartOptions));
+            declutteredOptions.plugins.legend.display = false;
+            declutteredOptions.scales.y.grid.display = false;
+            declutteredOptions.scales.y.ticks.display = false;
+            declutteredOptions.scales.x.grid.display = false;
+            
+            // Focused state
+            const focusedOptions = JSON.parse(JSON.stringify(declutteredOptions));
+            
+            // Declutter (but not focused) state
+            const declutterOnlyOptions = JSON.parse(JSON.stringify(declutteredOptions));
+
+
+            function createChart(options) {
+                if (vizChart) {
+                    vizChart.destroy();
+                }
+                vizChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: options
+                });
+            }
+
+            // Button listeners
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                vizChart.options.plugins.legend.display = true;
+                vizChart.options.scales.y.grid.display = true;
+                vizChart.options.scales.y.ticks.display = true;
+                vizChart.options.scales.x.grid.display = false;
+                vizChart.data.datasets[0].backgroundColor = clutteredBg;
+                vizChart.data.datasets[0].borderColor = clutteredBorder;
+                vizChart.update();
+            });
+            
+            document.getElementById('btn-declutter').addEventListener('click', () => {
+                vizChart.options.plugins.legend.display = false;
+                vizChart.options.scales.y.grid.display = false;
+                vizChart.options.scales.y.ticks.display = false;
+                vizChart.options.scales.x.grid.display = false;
+                vizChart.data.datasets[0].backgroundColor = clutteredBg;
+                vizChart.data.datasets[0].borderColor = clutteredBorder;
+                vizChart.update();
+            });
+            
+            document.getElementById('btn-focus').addEventListener('click', () => {
+                vizChart.options.plugins.legend.display = false;
+                vizChart.options.scales.y.grid.display = false;
+                vizChart.options.scales.y.ticks.display = false;
+                vizChart.options.scales.x.grid.display = false;
+                vizChart.data.datasets[0].backgroundColor = focusedBg;
+                vizChart.data.datasets[0].borderColor = focusedBorder;
+                vizChart.update();
+            });
+
+            // Init chart
+            createChart(clutteredOptions);
+
+            // --- Title Logic Toggle ---
+            const btnTitle = document.getElementById('btn-title-logic');
+            const titleBad = document.getElementById('title-logic-bad');
+            const titleGood = document.getElementById('title-logic-good');
+
+            btnTitle.addEventListener('click', () => {
+                titleBad.classList.toggle('hidden');
+                titleGood.classList.toggle('hidden');
+            });
+            
+            // --- Active Nav Link Scrolling ---
+            const navLinks = document.querySelectorAll('[data-nav-link]');
+            const sections = document.querySelectorAll('section[id]');
+
+            function changeNav() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) { // 100px offset for header
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', changeNav);
+            changeNav(); // Initial check
+
+            // --- Smooth scroll for nav links ---
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 64, // 64px for header height
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
